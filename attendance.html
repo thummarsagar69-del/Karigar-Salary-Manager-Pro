@@ -45,6 +45,24 @@
 </button>
 
 </div>
+<div class="list-card">
+
+<h3>📊 Attendance Report</h3>
+
+<label>અઠવાડિયું</label>
+<input type="week" id="weekFilter" onchange="loadWeeklyAttendance()">
+
+<label>કારીગર</label>
+<select id="workerFilter" onchange="loadWeeklyAttendance()">
+    <option value="">બધા કારીગર</option>
+</select>
+
+<div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+    <button onclick="exportPDF()">📄 PDF</button>
+    <button onclick="exportExcel()">📊 Excel</button>
+</div>
+
+</div>
 <h2 style="padding:15px;">📅 અઠવાડિયાની હાજરી</h2>
 
 <div style="overflow-x:auto; padding:15px;">
@@ -53,17 +71,21 @@
 
 <thead>
 
-<tr>
+<tr id="weekHeader">
+
 <th>કારીગર</th>
-<th>સોમ</th>
-<th>મંગળ</th>
-<th>બુધ</th>
-<th>ગુરુ</th>
-<th>શુક્ર</th>
-<th>શનિ</th>
-<th>રવિ</th>
+
+<th>--<br>સોમ</th>
+<th>--<br>મંગળ</th>
+<th>--<br>બુધ</th>
+<th>--<br>ગુરુ</th>
+<th>--<br>શુક્ર</th>
+<th>--<br>શનિ</th>
+<th>--<br>રવિ</th>
+
 <th>કુલ કલાક</th>
 <th>કુલ પગાર</th>
+
 </tr>
 
 </thead>
@@ -80,12 +102,40 @@
 
 <div id="attendanceList"></div>
 
+<div style="margin-top:20px;">
+<h3>📋 આજની હાજરી</h3>
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>કારીગર</th>
+<th>કલાક</th>
+<th>પગાર</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="todayBody">
+
+</tbody>
+
+</table>
+
+</div>
+
 <div style="padding:15px;">
 <a href="index.html" class="btn">🏠 Dashboard</a>
 </div>
 
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="attendance.js"></script>
 
 </body>
