@@ -6,6 +6,52 @@
 <title>Salary Report</title>
 
 <link rel="stylesheet" href="style.css">
+
+<style>
+.table-wrap{
+overflow-x:auto;
+margin-top:15px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#fff;
+}
+
+table th,
+table td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+font-size:14px;
+}
+
+table th{
+background:#0d6efd;
+color:#fff;
+}
+
+.action-btn{
+padding:6px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#198754;
+color:#fff;
+}
+
+.total-box{
+margin-top:15px;
+padding:15px;
+background:#f8f9fa;
+border-radius:8px;
+text-align:right;
+font-size:18px;
+font-weight:bold;
+}
+</style>
+
 </head>
 
 <body>
@@ -20,21 +66,55 @@
 <div class="list-card">
 
 <label>મહિનો પસંદ કરો</label>
-
 <input type="month" id="month" onchange="loadReport()">
-<label>કારીગર પસંદ કરો</label>
+
+<label style="margin-top:15px;">કારીગર પસંદ કરો</label>
 
 <select id="workerFilter" onchange="loadReport()">
 <option value="">બધા કારીગર</option>
 </select>
+
 </div>
 
-<div id="reportList"></div>
+<div class="table-wrap">
 
-<div style="padding:15px;">
+<table>
+
+<thead>
+
+<tr>
+
+<th>ક્રમ</th>
+<th>કારીગર</th>
+<th>હાજરી</th>
+<th>કલાક</th>
+<th>પગાર</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="reportBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+<div id="grandTotal" class="total-box">
+કુલ પગાર : ₹0
+</div>
+
+<div style="padding:15px;display:flex;gap:10px;flex-wrap:wrap;">
 
 <button onclick="window.print()">
-🖨️ Print Report
+🖨️ બધા Print
+</button>
+
+<button onclick="downloadAllPDF()">
+📄 બધા PDF
 </button>
 
 </div>
