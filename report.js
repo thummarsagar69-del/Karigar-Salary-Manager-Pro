@@ -1,48 +1,69 @@
 let attendance =
 JSON.parse(localStorage.getItem("attendance")) || [];
 
-function loadReport(){
+let workers =
+JSON.parse(localStorage.getItem("workers")) || [];
 
-let month =
-document.getElementById("month").value;
+loadWorkers();
+loadReport();
+
+function loadWorkers() {
+
+let select = document.getElementById("workerFilter");
+
+select.innerHTML = `<option value="">બધા કારીગર</option>`;
+
+workers.forEach(worker => {
+
+select.innerHTML += `
+<option value="${worker.name}">
+${worker.name}
+</option>
+`;
+
+});
+
+}
+
+function loadReport() {
+
+let month = document.getElementById("month").value;
+let workerFilter = document.getElementById("workerFilter").value;
 
 let report = {};
 
-attendance.forEach(a=>{
+attendance.forEach(a => {
 
-if(month=="" || a.date.substring(0,7)==month){
+if (
+(month == "" || a.date.substring(0,7) == month) &&
+(workerFilter == "" || a.workerName == workerFilter)
+) {
 
-if(!report[a.workerName]){
+if (!report[a.workerName]) {
 
-report[a.workerName]={
-
-hours:0,
-
-salary:0,
-
-days:0
-
+report[a.workerName] = {
+hours: 0,
+salary: 0,
+days: 0
 };
 
 }
 
 report[a.workerName].hours += Number(a.hours);
-
 report[a.workerName].salary += Number(a.salary);
-
 report[a.workerName].days++;
 
 }
 
 });
 
-let list=document.getElementById("reportList");
+let list = document.getElementById("reportList");
 
-list.innerHTML="";
+list.innerHTML = "";
 
-let grandTotal=0;
+let grandTotal = 0;
 
-for(let worker in report){
+for (let worker in report) {
 
 grandTotal += report[worker].salary;
 
@@ -64,6 +85,18 @@ list.innerHTML += `
 
 }
 
+if (Object.keys(report).length === 0) {
+
+list.innerHTML = `
+<div class="list-card">
+<h3>કોઈ રેકોર્ડ મળ્યો નથી.</h3>
+</div>
+`;
+
+return;
+
+}
+
 list.innerHTML += `
 
 <div class="list-card">
@@ -77,5 +110,3 @@ list.innerHTML += `
 `;
 
 }
-
-loadReport();
