@@ -238,7 +238,12 @@ function deleteAttendance(index) {
 // ---------- Attendance List ----------
 function loadAttendance() {
 
-    
+    const list = document.getElementById("attendanceList");
+
+if (list) {
+    list.innerHTML = "";
+}
+
 
     attendance.sort((a, b) =>
         b.date.localeCompare(a.date)
