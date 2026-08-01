@@ -49,6 +49,14 @@
 
 <h3>📊 Attendance Report</h3>
 
+<input
+type="text"
+id="searchWorker"
+placeholder="🔍 કારીગર શોધો..."
+onkeyup="searchWorker()">
+
+<br><br>
+
 <label>અઠવાડિયું</label>
 <input type="week" id="weekFilter" onchange="loadWeeklyAttendance()">
 
@@ -100,7 +108,7 @@
 
 <h2 style="padding:15px;">આજની હાજરી</h2>
 
-<div id="attendanceList"></div>
+
 
 <div style="margin-top:20px;">
 <h3>📋 આજની હાજરી</h3>
