@@ -261,20 +261,14 @@ function loadAttendance() {
             <td>₹${a.salary}</td>
 
             <td>
+    <div class="action-btn">
+        <button class="edit-btn"
+            onclick="editAttendance(${index})">✏️</button>
 
-                <button
-                    onclick="editAttendance(${index})"
-                    style="background:#1976d2;color:white;border:none;padding:6px 10px;border-radius:5px;">
-                    ✏️
-                </button>
-
-                <button
-                    onclick="deleteAttendance(${index})"
-                    style="background:#d32f2f;color:white;border:none;padding:6px 10px;border-radius:5px;margin-left:5px;">
-                    🗑️
-                </button>
-
-            </td>
+        <button class="delete-btn"
+            onclick="deleteAttendance(${index})">🗑️</button>
+    </div>
+</td>
 
         </tr>
         `;
