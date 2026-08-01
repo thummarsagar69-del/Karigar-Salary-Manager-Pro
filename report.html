@@ -22,7 +22,11 @@
 <label>મહિનો પસંદ કરો</label>
 
 <input type="month" id="month" onchange="loadReport()">
+<label>કારીગર પસંદ કરો</label>
 
+<select id="workerFilter" onchange="loadReport()">
+<option value="">બધા કારીગર</option>
+</select>
 </div>
 
 <div id="reportList"></div>
