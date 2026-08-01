@@ -235,61 +235,53 @@ function deleteAttendance(index) {
 
 }
 
-// ---------- Attendance List ----------
+// ===============================
+// Load Today's Attendance
+// ===============================
 function loadAttendance() {
 
-    const list = document.getElementById("attendanceList");
+    const todayBody = document.getElementById("todayBody");
 
-if (list) {
-    list.innerHTML = "";
-}
+    if (!todayBody) return;
 
+    todayBody.innerHTML = "";
 
-    attendance.sort((a, b) =>
-        b.date.localeCompare(a.date)
-    );
+    // તારીખ પ્રમાણે નવી એન્ટ્રી ઉપર
+    attendance.sort((a, b) => b.date.localeCompare(a.date));
 
     attendance.forEach((a, index) => {
 
-        list.innerHTML += `
+        todayBody.innerHTML += `
+        <tr>
 
-        <div class="list-card">
+            <td>${a.workerName}</td>
 
-            <h3>${a.workerName}</h3>
+            <td>${a.hours}</td>
 
-            <p>📅 ${a.date}</p>
+            <td>₹${a.salary}</td>
 
-            <p>⏱ ${a.hours} કલાક</p>
-
-            <p>💰 ₹${a.salary}</p>
-
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <td>
 
                 <button
-                onclick="editAttendance(${index})">
-
-                ✏️ Edit
-
+                    onclick="editAttendance(${index})"
+                    style="background:#1976d2;color:white;border:none;padding:6px 10px;border-radius:5px;">
+                    ✏️
                 </button>
 
                 <button
-                class="delete-btn"
-                onclick="deleteAttendance(${index})">
-
-                🗑 Delete
-
+                    onclick="deleteAttendance(${index})"
+                    style="background:#d32f2f;color:white;border:none;padding:6px 10px;border-radius:5px;margin-left:5px;">
+                    🗑️
                 </button>
 
-            </div>
+            </td>
 
-        </div>
-
+        </tr>
         `;
 
     });
 
 }
-
 
 // ===============================
 // Attendance.js Part 2
