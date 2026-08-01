@@ -104,6 +104,7 @@ function saveAttendance(){
     alert("હાજરી સેવ થઈ ગઈ.");
 
     loadAttendance();
+loadWeeklyAttendance();
 
 }
 
@@ -145,6 +146,59 @@ function loadAttendance(){
 
 }
 
+function loadWeeklyAttendance() {
+
+let attendance = JSON.parse(localStorage.getItem("attendance")) || [];
+let workers = JSON.parse(localStorage.getItem("workers")) || [];
+
+let tbody = document.getElementById("weeklyBody");
+
+tbody.innerHTML = "";
+
+workers.forEach(worker => {
+
+let row = `
+<tr>
+<td>${worker.name}</td>
+`;
+
+let totalHours = 0;
+let totalSalary = 0;
+
+for (let i = 0; i < 7; i++) {
+
+let record = attendance.find(a =>
+a.worker == worker.name &&
+new Date(a.date).getDay() == ((i + 1) % 7)
+);
+
+if (record) {
+
+row += `<td>${record.hours}</td>`;
+
+totalHours += Number(record.hours);
+totalSalary += Number(record.salary);
+
+} else {
+
+row += `<td>-</td>`;
+
+}
+
+}
+
+row += `
+<td>${totalHours}</td>
+<td>₹${totalSalary}</td>
+</tr>
+`;
+
+tbody.innerHTML += row;
+
+});
+
+}
+
 function deleteAttendance(index){
 
     if(confirm("હાજરી Delete કરવી છે?")){
@@ -165,3 +219,4 @@ new Date().toISOString().split("T")[0];
 
 loadWorkers();
 loadAttendance();
+loadWeeklyAttendance();
