@@ -18,8 +18,7 @@ workers.forEach(worker => {
 select.innerHTML += `
 <option value="${worker.name}">
 ${worker.name}
-</option>
-`;
+</option>`;
 
 });
 
@@ -42,71 +41,202 @@ if (
 if (!report[a.workerName]) {
 
 report[a.workerName] = {
+days: 0,
 hours: 0,
-salary: 0,
-days: 0
+salary: 0
 };
 
 }
 
+report[a.workerName].days++;
 report[a.workerName].hours += Number(a.hours);
 report[a.workerName].salary += Number(a.salary);
-report[a.workerName].days++;
 
 }
 
 });
 
-let list = document.getElementById("reportList");
+let body = document.getElementById("reportBody");
 
-list.innerHTML = "";
+body.innerHTML = "";
 
 let grandTotal = 0;
+
+let sr = 1;
 
 for (let worker in report) {
 
 grandTotal += report[worker].salary;
 
-list.innerHTML += `
+body.innerHTML += `
 
-<div class="list-card">
+<tr>
 
-<h3>👷 ${worker}</h3>
+<td>${sr++}</td>
 
-<p>📅 હાજરી: ${report[worker].days} દિવસ</p>
+<td>${worker}</td>
 
-<p>⏱️ કુલ કલાક: ${report[worker].hours}</p>
+<td>${report[worker].days}</td>
 
-<p>💰 કુલ પગાર: ₹${report[worker].salary}</p>
+<td>${report[worker].hours}</td>
 
-</div>
+<td>₹${report[worker].salary}</td>
+
+<td>
+
+<button class="action-btn"
+onclick="printWorker('${worker}')">
+
+🖨️ Print
+
+</button>
+
+</td>
+
+</tr>
 
 `;
 
 }
 
-if (Object.keys(report).length === 0) {
+if (Object.keys(report).length == 0) {
 
-list.innerHTML = `
-<div class="list-card">
-<h3>કોઈ રેકોર્ડ મળ્યો નથી.</h3>
-</div>
+body.innerHTML = `
+
+<tr>
+
+<td colspan="6">
+
+કોઈ રેકોર્ડ મળ્યો નથી.
+
+</td>
+
+</tr>
+
 `;
-
-return;
 
 }
 
-list.innerHTML += `
+document.getElementById("grandTotal").innerHTML =
+`કુલ પગાર : <span style="color:green;">₹${grandTotal}</span>`;
 
-<div class="list-card">
+}
 
-<h2>કુલ ચૂકવવાનો પગાર</h2>
+function printWorker(workerName){
 
-<h2 style="color:green;">₹${grandTotal}</h2>
+let month=document.getElementById("month").value;
 
-</div>
+let data=attendance.filter(a=>
 
-`;
+(month=="" || a.date.substring(0,7)==month)
+
+&& a.workerName==workerName
+
+);
+
+let totalHours=0;
+let totalSalary=0;
+
+data.forEach(d=>{
+
+totalHours+=Number(d.hours);
+
+totalSalary+=Number(d.salary);
+
+});
+
+let win=window.open("","_blank");
+
+win.document.write(`
+
+<html>
+
+<head>
+
+<title>${workerName}</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+padding:20px;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+th,td{
+
+border:1px solid #000;
+
+padding:8px;
+
+text-align:center;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Prominent Technology</h2>
+
+<h3>Salary Report</h3>
+
+<p><b>કારીગર :</b> ${workerName}</p>
+
+<p><b>મહિનો :</b> ${month || "બધા"}</p>
+
+<table>
+
+<tr>
+
+<th>તારીખ</th>
+
+<th>કલાક</th>
+
+<th>પગાર</th>
+
+</tr>
+
+${data.map(d=>`
+
+<tr>
+
+<td>${d.date}</td>
+
+<td>${d.hours}</td>
+
+<td>₹${d.salary}</td>
+
+</tr>
+
+`).join("")}
+
+</table>
+
+<h3>કુલ કલાક : ${totalHours}</h3>
+
+<h3>કુલ પગાર : ₹${totalSalary}</h3>
+
+</body>
+
+</html>
+
+`);
+
+win.document.close();
+
+win.print();
 
 }
