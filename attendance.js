@@ -1,32 +1,63 @@
+// ===============================
+// Attendance.js Part 1A
+// ===============================
+
 let workers = JSON.parse(localStorage.getItem("workers")) || [];
 let attendance = JSON.parse(localStorage.getItem("attendance")) || [];
 
+let editIndex = -1;
+
+// ----------------------------
+// Load Worker Dropdown
+// ----------------------------
 function loadWorkers() {
 
-    const select = document.getElementById("worker");
+    const worker = document.getElementById("worker");
+    const workerFilter = document.getElementById("workerFilter");
 
-    select.innerHTML =
-    '<option value="">કારીગર પસંદ કરો</option>';
+    worker.innerHTML =
+        '<option value="">કારીગર પસંદ કરો</option>';
+
+    if (workerFilter) {
+
+        workerFilter.innerHTML =
+            '<option value="">બધા કારીગર</option>';
+
+    }
 
     workers.forEach((w, index) => {
 
-        select.innerHTML +=
-        `<option value="${index}">
-        ${w.name}
+        worker.innerHTML += `
+        <option value="${index}">
+            ${w.name}
         </option>`;
+
+        if (workerFilter) {
+
+            workerFilter.innerHTML += `
+            <option value="${w.id}">
+                ${w.name}
+            </option>`;
+
+        }
 
     });
 
 }
 
+// ----------------------------
+// Hour Rate
+// ----------------------------
 function setRate() {
 
-    const index = document.getElementById("worker").value;
+    const index =
+        document.getElementById("worker").value;
 
-    if(index===""){
+    if (index === "") {
 
-        rate.value="";
-        salary.value="";
+        rate.value = "";
+        salary.value = "";
+
         return;
 
     }
@@ -37,23 +68,31 @@ function setRate() {
 
 }
 
-function calculateSalary(){
+// ----------------------------
+// Salary
+// ----------------------------
+function calculateSalary() {
 
-    const hours = Number(document.getElementById("hours").value);
+    let hrs =
+        Number(document.getElementById("hours").value);
 
-    const rateValue = Number(document.getElementById("rate").value);
+    let rt =
+        Number(document.getElementById("rate").value);
 
     document.getElementById("salary").value =
-    hours * rateValue;
+        hrs * rt;
 
 }
 
-function saveAttendance(){
+// ----------------------------
+// Save Attendance
+// ----------------------------
+function saveAttendance() {
 
     const workerIndex =
-    document.getElementById("worker").value;
+        document.getElementById("worker").value;
 
-    if(workerIndex===""){
+    if (workerIndex === "") {
 
         alert("કારીગર પસંદ કરો");
 
@@ -62,81 +101,186 @@ function saveAttendance(){
     }
 
     const date =
-    document.getElementById("date").value;
+        document.getElementById("date").value;
 
     const duplicate =
-    attendance.find(a =>
-    a.date===date &&
-    a.workerId==workers[workerIndex].id);
+        attendance.find((a, i) =>
 
-    if(duplicate){
+            a.workerId ==
+            workers[workerIndex].id &&
 
-        alert("આ કારીગરની આજની હાજરી પહેલેથી સેવ છે.");
+            a.date == date &&
+
+            i != editIndex
+
+        );
+
+    if (duplicate) {
+
+        alert("આ તારીખની હાજરી પહેલેથી સેવ થઈ ગઈ છે.");
 
         return;
 
     }
 
-    const record={
+    let record = {
 
-        id:Date.now(),
+        id:
+            editIndex == -1
+                ? Date.now()
+                : attendance[editIndex].id,
 
-        date:date,
+        date: date,
 
-        workerId:workers[workerIndex].id,
+        workerId:
+            workers[workerIndex].id,
 
-        workerName:workers[workerIndex].name,
+        workerName:
+            workers[workerIndex].name,
 
-        hours:Number(hours.value),
+        hours:
+            Number(hours.value),
 
-        rate:Number(rate.value),
+        rate:
+            Number(rate.value),
 
-        salary:Number(salary.value)
+        salary:
+            Number(salary.value)
 
     };
 
-    attendance.push(record);
+    if (editIndex == -1) {
+
+        attendance.push(record);
+
+    } else {
+
+        attendance[editIndex] = record;
+
+        editIndex = -1;
+
+    }
 
     localStorage.setItem(
-    "attendance",
-    JSON.stringify(attendance));
+        "attendance",
+        JSON.stringify(attendance)
+    );
 
-    alert("હાજરી સેવ થઈ ગઈ.");
+    clearAttendanceForm();
 
     loadAttendance();
-loadWeeklyAttendance();
+
+    loadWeeklyAttendance();
+
+    alert("હાજરી સફળતાપૂર્વક સેવ થઈ ગઈ.");
 
 }
 
-function loadAttendance(){
+// ===============================
+// Attendance.js Part 1B
+// ===============================
+
+// ---------- Clear Form ----------
+function clearAttendanceForm() {
+
+    document.getElementById("worker").value = "";
+    document.getElementById("rate").value = "";
+    document.getElementById("hours").value = "";
+    document.getElementById("salary").value = "";
+
+    document.getElementById("date").value =
+        new Date().toISOString().split("T")[0];
+
+}
+
+// ---------- Edit Attendance ----------
+function editAttendance(index) {
+
+    let a = attendance[index];
+
+    editIndex = index;
+
+    document.getElementById("date").value = a.date;
+
+    document.getElementById("hours").value = a.hours;
+
+    document.getElementById("rate").value = a.rate;
+
+    document.getElementById("salary").value = a.salary;
+
+    let workerIndex =
+        workers.findIndex(w => w.id == a.workerId);
+
+    document.getElementById("worker").value =
+        workerIndex;
+
+}
+
+// ---------- Delete ----------
+function deleteAttendance(index) {
+
+    if (!confirm("હાજરી Delete કરવી છે?"))
+        return;
+
+    attendance.splice(index, 1);
+
+    localStorage.setItem(
+        "attendance",
+        JSON.stringify(attendance)
+    );
+
+    loadAttendance();
+
+    loadWeeklyAttendance();
+
+}
+
+// ---------- Attendance List ----------
+function loadAttendance() {
 
     const list =
-    document.getElementById("attendanceList");
+        document.getElementById("attendanceList");
 
-    list.innerHTML="";
+    if (!list) return;
 
-    attendance
-    .sort((a,b)=>b.date.localeCompare(a.date))
-    .forEach((a,index)=>{
+    list.innerHTML = "";
 
-        list.innerHTML+=`
+    attendance.sort((a, b) =>
+        b.date.localeCompare(a.date)
+    );
+
+    attendance.forEach((a, index) => {
+
+        list.innerHTML += `
 
         <div class="list-card">
 
-        <h3>${a.workerName}</h3>
+            <h3>${a.workerName}</h3>
 
-        <p>📅 ${a.date}</p>
+            <p>📅 ${a.date}</p>
 
-        <p>⏱️ ${a.hours} કલાક</p>
+            <p>⏱ ${a.hours} કલાક</p>
 
-        <p>💰 ₹${a.salary}</p>
+            <p>💰 ₹${a.salary}</p>
 
-        <button class="delete-btn"
-        onclick="deleteAttendance(${index})">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
 
-        Delete
+                <button
+                onclick="editAttendance(${index})">
 
-        </button>
+                ✏️ Edit
+
+                </button>
+
+                <button
+                class="delete-btn"
+                onclick="deleteAttendance(${index})">
+
+                🗑 Delete
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -146,77 +290,345 @@ function loadAttendance(){
 
 }
 
-function loadWeeklyAttendance() {
 
-let attendance = JSON.parse(localStorage.getItem("attendance")) || [];
-let workers = JSON.parse(localStorage.getItem("workers")) || [];
+// ===============================
+// Attendance.js Part 2
+// Weekly Attendance
+// ===============================
 
-let tbody = document.getElementById("weeklyBody");
+// અઠવાડિયાની તારીખો
+function getWeekDates() {
 
-tbody.innerHTML = "";
+    let start = new Date();
 
-workers.forEach(worker => {
+    let day = start.getDay();
 
-let row = `
-<tr>
-<td>${worker.name}</td>
-`;
+    let diff = (day === 0 ? -6 : 1 - day);
 
-let totalHours = 0;
-let totalSalary = 0;
+    start.setDate(start.getDate() + diff);
 
-for (let i = 0; i < 7; i++) {
+    start.setHours(0,0,0,0);
 
-let record = attendance.find(a =>
-a.worker == worker.name &&
-new Date(a.date).getDay() == ((i + 1) % 7)
-);
+    let dates = [];
 
-if (record) {
+    for(let i=0;i<7;i++){
 
-row += `<td>${record.hours}</td>`;
+        let d=new Date(start);
 
-totalHours += Number(record.hours);
-totalSalary += Number(record.salary);
+        d.setDate(start.getDate()+i);
 
-} else {
+        dates.push(d);
 
-row += `<td>-</td>`;
+    }
+
+    return dates;
 
 }
 
+// Weekly Table
+function loadWeeklyAttendance(){
+
+    const tbody =
+    document.getElementById("weeklyBody");
+
+    if(!tbody) return;
+
+    tbody.innerHTML="";
+
+    const dates=getWeekDates();
+
+    updateWeekHeader(dates);
+
+    let workerFilter="";
+
+    if(document.getElementById("workerFilter")){
+
+        workerFilter=
+        document.getElementById("workerFilter").value;
+
+    }
+
+    workers.forEach(worker=>{
+
+        if(workerFilter!="" &&
+        worker.id!=workerFilter){
+
+            return;
+
+        }
+
+        let row=`<tr>`;
+
+        row+=`<td><b>${worker.name}</b></td>`;
+
+        let totalHours=0;
+
+        let totalSalary=0;
+
+        dates.forEach(d=>{
+
+            let dateString=
+            d.toISOString().split("T")[0];
+
+            let rec=
+            attendance.find(a=>
+
+                a.workerId==worker.id &&
+                a.date==dateString
+
+            );
+
+            if(rec){
+
+                row+=`
+                <td style="color:green;">
+                ${rec.hours}
+                </td>`;
+
+                totalHours+=Number(rec.hours);
+
+                totalSalary+=Number(rec.salary);
+
+            }else{
+
+                row+=`
+                <td style="color:red;">
+                -
+                </td>`;
+
+            }
+
+        });
+
+        row+=`
+        <td><b>${totalHours}</b></td>
+
+        <td><b>₹${totalSalary}</b></td>
+
+        </tr>`;
+
+        tbody.innerHTML+=row;
+
+    });
+
 }
 
-row += `
-<td>${totalHours}</td>
-<td>₹${totalSalary}</td>
-</tr>
-`;
+// Header Date
+function updateWeekHeader(dates){
 
-tbody.innerHTML += row;
+    const row=
+    document.getElementById("weekHeader");
 
-});
+    if(!row) return;
+
+    const days=[
+    "સોમ",
+    "મંગળ",
+    "બુધ",
+    "ગુરુ",
+    "શુક્ર",
+    "શનિ",
+    "રવિ"
+    ];
+
+    row.innerHTML="<th>કારીગર</th>";
+
+    dates.forEach((d,index)=>{
+
+        row.innerHTML+=`
+
+        <th>
+
+        ${d.toLocaleDateString("en-GB")}
+
+        <br>
+
+        ${days[index]}
+
+        </th>
+
+        `;
+
+    });
+
+    row.innerHTML+=`
+
+    <th>કુલ કલાક</th>
+
+    <th>કુલ પગાર</th>
+
+    `;
 
 }
 
-function deleteAttendance(index){
 
-    if(confirm("હાજરી Delete કરવી છે?")){
+// ===============================
+// Attendance.js Part 3 (Final)
+// ===============================
 
-        attendance.splice(index,1);
+// ---------- Export Excel ----------
+function exportExcel() {
 
-        localStorage.setItem(
-        "attendance",
-        JSON.stringify(attendance));
+    let table = document.getElementById("weeklyTable");
 
-        loadAttendance();
+    if (!table) {
+        alert("ટેબલ મળ્યું નથી.");
+        return;
+    }
+
+    let workbook = XLSX.utils.table_to_book(table, {
+        sheet: "Attendance"
+    });
+
+    XLSX.writeFile(
+        workbook,
+        "Weekly_Attendance.xlsx"
+    );
+
+}
+
+
+// ---------- Export PDF ----------
+function exportPDF() {
+
+    window.print();
+
+}
+
+
+// ---------- Search Worker ----------
+function searchWorker() {
+
+    let txt = document
+        .getElementById("searchWorker")
+        .value
+        .toLowerCase();
+
+    document
+        .querySelectorAll("#weeklyBody tr")
+        .forEach(row => {
+
+            row.style.display =
+                row.innerText
+                .toLowerCase()
+                .includes(txt)
+                ? ""
+                : "none";
+
+        });
+
+}
+
+
+// ---------- Set Current Week ----------
+function setCurrentWeek() {
+
+    let today = new Date();
+
+    let first =
+        new Date(today);
+
+    let day = first.getDay();
+
+    let diff =
+        first.getDate() -
+        day +
+        (day == 0 ? -6 : 1);
+
+    first.setDate(diff);
+
+    if (document.getElementById("weekFilter")) {
+
+        let year =
+            first.getFullYear();
+
+        let week =
+            getWeekNumber(first);
+
+        document
+            .getElementById("weekFilter")
+            .value =
+            year +
+            "-W" +
+            String(week)
+            .padStart(2, "0");
 
     }
 
 }
-document.getElementById("date").value =
-new Date().toISOString().split("T")[0];
 
-loadWorkers();
-loadAttendance();
-loadWeeklyAttendance();
+
+// ---------- Week Number ----------
+function getWeekNumber(date) {
+
+    let d =
+        new Date(Date.UTC(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        ));
+
+    d.setUTCDate(
+        d.getUTCDate() +
+        4 -
+        (d.getUTCDay() || 7)
+    );
+
+    let yearStart =
+        new Date(
+            Date.UTC(
+                d.getUTCFullYear(),
+                0,
+                1
+            )
+        );
+
+    return Math.ceil(
+
+        (
+            (
+                (
+                    d -
+                    yearStart
+                ) /
+                86400000
+            ) +
+            1
+        ) / 7
+
+    );
+
+}
+
+
+// ---------- Page Load ----------
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function () {
+
+        if (
+            document.getElementById("date")
+        ) {
+
+            document
+                .getElementById("date")
+                .value =
+                new Date()
+                .toISOString()
+                .split("T")[0];
+
+        }
+
+        loadWorkers();
+
+        loadAttendance();
+
+        setCurrentWeek();
+
+        loadWeeklyAttendance();
+
+    }
+
+);
