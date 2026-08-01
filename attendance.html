@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+<h1>📅 હાજરી</h1>
+<p>રોજની હાજરી અને પગાર</p>
+</header>
+
+<div class="list-card">
+
+<label>તારીખ</label>
+<input type="date" id="date">
+
+<label>કારીગર</label>
+<select id="worker" onchange="setRate()">
+<option value="">કારીગર પસંદ કરો</option>
+</select>
+
+<label>કલાકનો પગાર</label>
+<input type="number" id="rate" readonly>
+
+<label>કામ કરેલા કલાક</label>
+<input type="number" id="hours" placeholder="કલાક લખો" oninput="calculateSalary()">
+
+<label>કુલ પગાર</label>
+<input type="number" id="salary" readonly>
+
+<button onclick="saveAttendance()">
+💾 હાજરી સેવ કરો
+</button>
+
+</div>
+
+<h2 style="padding:15px;">આજની હાજરી</h2>
+
+<div id="attendanceList"></div>
+
+<div style="padding:15px;">
+<a href="index.html" class="btn">🏠 Dashboard</a>
+</div>
+
+</div>
+
+<script src="js/attendance.js"></script>
+
+</body>
+</html>

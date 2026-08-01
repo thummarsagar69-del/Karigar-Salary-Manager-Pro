@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Karigar Salary Manager Pro</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#1565C0">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+<h1>👷 Karigar Salary Manager</h1>
+<p>કારીગર હાજરી અને પગાર મેનેજમેન્ટ</p>
+</header>
+
+<section class="dashboard">
+
+<div class="card">
+<h2 id="totalWorkers">0</h2>
+<p>કુલ કારીગર</p>
+</div>
+
+<div class="card">
+<h2 id="todayAttendance">0</h2>
+<p>આજની હાજરી</p>
+</div>
+
+<div class="card">
+<h2 id="todaySalary">₹0</h2>
+<p>આજનો પગાર</p>
+</div>
+
+<div class="card">
+<h2 id="monthSalary">₹0</h2>
+<p>મહિનાનો પગાર</p>
+</div>
+
+</section>
+
+<nav class="menu">
+
+<a href="worker.html" class="btn">👷 Worker Master</a>
+
+<a href="attendance.html" class="btn">📅 Attendance</a>
+
+<a href="report.html" class="btn">📊 Salary Report</a>
+
+
+</nav>
+
+</div>
+
+<script src="js/app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salary Report</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+<h1>📊 Salary Report</h1>
+<p>કારીગરનો પગાર રિપોર્ટ</p>
+</header>
+
+<div class="list-card">
+
+<label>મહિનો પસંદ કરો</label>
+
+<input type="month" id="month" onchange="loadReport()">
+
+</div>
+
+<div id="reportList"></div>
+
+<div style="padding:15px;">
+
+<button onclick="window.print()">
+🖨️ Print Report
+</button>
+
+</div>
+
+<div style="padding:15px;">
+<a href="index.html" class="btn">🏠 Dashboard</a>
+</div>
+
+</div>
+
+<script src="js/report.js"></script>
+
+</body>
+</html>
